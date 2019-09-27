@@ -64,18 +64,18 @@ public class AutonomousDP extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-// Initialize the hardware variables. Note that the strings used here as parameters.  NOTE : String is same as phone motor names 
+// Initialize the hardware variables. Note that the strings used here as parameters.  NOTE : String is same as phone motor names
         leftFront  = hardwareMap.get(DcMotor.class, "Left-Front");
         rightFront = hardwareMap.get(DcMotor.class, "Right-Front");
         leftBack  = hardwareMap.get(DcMotor.class, "Left-Back");
         rightBack = hardwareMap.get(DcMotor.class, "Right-Back");
-        
-        
+
+
         // Most robots need the motor on one side to be reversed to drive forward - Reverse the motor that runs backwards when connected directly to the battery
         leftFront.setDirection(DcMotor.Direction.FORWARD);
         rightFront.setDirection(DcMotor.Direction.REVERSE);
         leftBack.setDirection(DcMotor.Direction.FORWARD);
-        rightBack.setDirection(DcMotor.Direction.REVERSE)
+        rightBack.setDirection(DcMotor.Direction.REVERSE);
 
 
         // Wait for the game to start (driver presses PLAY)
