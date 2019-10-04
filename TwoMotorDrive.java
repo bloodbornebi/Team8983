@@ -50,9 +50,9 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Scrim", group="Linear Opmode")
+@TeleOp(name="TwoMotor", group="Linear Opmode")
 
-public class ScrimDriverControlled extends LinearOpMode {
+public class TwoMotorDrive extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
