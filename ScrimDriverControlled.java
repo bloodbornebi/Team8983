@@ -67,16 +67,16 @@ public class ScrimDriverControlled extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        leftFront  = hardwareMap.get(DcMotor.class, "Left-Front");
-        rightFront = hardwareMap.get(DcMotor.class, "Right-Front");
-        leftBack  = hardwareMap.get(DcMotor.class, "Left-Back");
-        rightBack = hardwareMap.get(DcMotor.class, "Right-Back");
+        LF  = hardwareMap.get(DcMotor.class, "Left-Front");
+        RF = hardwareMap.get(DcMotor.class, "Right-Front");
+        LB  = hardwareMap.get(DcMotor.class, "Left-Back");
+        RB = hardwareMap.get(DcMotor.class, "Right-Back");
 
         // Most robots need the motor on one side to be reversed to drive forward - Reverse the motor that runs backwards when connected directly to the battery
-        leftFront.setDirection(DcMotor.Direction.FORWARD);
-        rightFront.setDirection(DcMotor.Direction.REVERSE);
-        leftBack.setDirection(DcMotor.Direction.FORWARD);
-        rightBack.setDirection(DcMotor.Direction.REVERSE);
+        LF.setDirection(DcMotor.Direction.FORWARD);
+        RF.setDirection(DcMotor.Direction.REVERSE);
+        LB.setDirection(DcMotor.Direction.FORWARD);
+        RB.setDirection(DcMotor.Direction.REVERSE);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -105,10 +105,10 @@ public class ScrimDriverControlled extends LinearOpMode {
             // rightPower = -gamepad1.right_stick_y ;
 
             // Send calculated power to wheels
-            leftFront.setPower(leftPower);
-            leftBack.setPower(leftPower);
-            rightFront.setPower(rightPower);
-            rightBack.setPower(rightBack);
+            LF.setPower(leftPower);
+            LB.setPower(leftPower);
+            RF.setPower(rightPower);
+            RB.setPower(RB);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
