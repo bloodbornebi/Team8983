@@ -105,8 +105,10 @@ public class ScrimDriverControlled extends LinearOpMode {
             // rightPower = -gamepad1.right_stick_y ;
 
             // Send calculated power to wheels
-            leftDrive.setPower(leftPower);
-            rightDrive.setPower(rightPower);
+            leftFront.setPower(leftPower);
+            leftBack.setPower(leftPower);
+            rightFront.setPower(rightPower);
+            rightBack.setPower(rightBack);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
