@@ -56,8 +56,8 @@ public class TwoMotorDrive extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftDrive = null;
-    private DcMotor rightDrive = null;
+    private DcMotor L = null;
+    private DcMotor R = null;
 
     @Override
     public void runOpMode() {
