@@ -80,10 +80,10 @@ public class AutonomousDP extends LinearOpMode {
       
             // reset the timeout time and start motion.
             runtime.reset();
-            LF.setPower(Math.abs(speed));
-            RF.setPower(Math.abs(speed));
-            LB.setPower(Math.abs(speed));
-            RB.setPower(Math.abs(speed));
+            LF.setPower(speed);
+            RF.setPower(speed);
+            LB.setPower(speed);
+            RB.setPower(speed);
            
             while (opModeIsActive() &&
                    (runtime.seconds() < timeout) &&
@@ -105,24 +105,22 @@ public class AutonomousDP extends LinearOpMode {
     }
 
 
-   public void turn(double speed, double leftInches, double rightInches){
-        
-        int newLFTarget;
-        int newRFTarget;
-        int newLBTarget;
-        int newRBTarget;
-       
-
-       
-       
-   }
     
     public void firstPath(){
     
-        encoderDrive(0.5, 18, 18, 5.0); 
-        //pickup function
-        endoderDrive(0.3, 12, 12, 5.0);
-        turn();
+        //turn left - drive if needed to place plate 
+        
+        
+        
+        encoderDrive(0.5, 18, 18, 5.0); // drive to plate
+        endoderDrive(0.3, 12, 0, 5.0); //turn left so robot is adjectent to the plate 
+        //clamp function
+        encoderDrive(0.3, 12, 0, 5.0)//turn towards corner
+        encoderDrive(0.3, 8, 8, 5.0)// drive towards corner 
+        //unclamp
+        encoderDrive(0.5, -16, -16, 5.0)//drive away from plate
+        encoderDrive(0.3, 0, 12, 5.0)// turn towards bridge thing with bar above
+        encoderDrive(0.8, 16, 16, 5.0)// drive fast towards bridge
     }
     
 }
