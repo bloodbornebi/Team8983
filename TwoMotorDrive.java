@@ -73,8 +73,8 @@ public class TwoMotorDrive extends LinearOpMode {
         arm = hardwareMap.get(DcMotor.class, "arm");
 
         // Most robots need the motor on one side to be reversed to drive forward - Reverse the motor that runs backwards when connected directly to the battery
-        L.setDirection(DcMotor.Direction.REVERSE);
-        R.setDirection(DcMotor.Direction.FORWARD);
+        L.setDirection(DcMotor.Direction.FORWARD);
+        R.setDirection(DcMotor.Direction.REVERSE);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
