@@ -100,6 +100,8 @@ public class ScrimDriverControlled extends LinearOpMode {
             RF.setPower(rightPower);
             RB.setPower(RB);
 
+            //Mecanum wheels work in diagonal pairs, so LF-RB is a pair and RF-LB is a pair. doubles will be LeftStrafePower and RightStrafePower. Inputs will be along the gamepad's X-axis.
+            
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
