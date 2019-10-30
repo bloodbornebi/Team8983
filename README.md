@@ -1,5 +1,4 @@
-# Team8983
-The repository for Legitimus Robotics (Team 8983) code team's code base.
+# Team8983 - The repository for Legitimus Robotics (Team 8983) code team's code base.
 
 ## VISION STATEMENT
 Legitimus Robotics, FTC team 8983, seeks to enrich the Canton Community by providing STEM workplace environments for young students throughout the town, developing bonds between mentors and students, as well as providing a medium for reaching out to our community.
