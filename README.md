@@ -18,3 +18,5 @@ Our mission at Legitimus Robotics is to develop students’ skills in science, t
 - Provide a teamwork oriented environment for students to work collaboratively in
 
 - Teach students how to overcome obstacles and think around problems to find a valuable solutions
+## Code-Team
+Code team's purpose is exactly in the name.  We work to write code for the robots that Build-Team builds.  Our team is essential to the whole operation since the robot would not be able to move or function without the code written by Code-Team.  Code-Team consists of 5 members, which include Matthew, Michael, Carson, Mackenzie, Elissa, and Cameron.  The current head of Code-Team is Matthew and drives the team to success by writing complex code and helping the other members understand what is going on and what need to happen.
