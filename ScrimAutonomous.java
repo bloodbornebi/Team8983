@@ -92,7 +92,7 @@ public class ScrimAutonomous extends LinearOpMode {
 
         resetEncoder();
 
-        encoderDrive(DRIVE_SPEED,45.5,45.5,5);
+        encoderDrive(DRIVE_SPEED,45,45,5);
         encoderDrive(DRIVE_SPEED,-40,-40,5);
         leftTurn(.5);
         encoderDrive(DRIVE_SPEED,46,46,5);
