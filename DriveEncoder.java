@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-public class DriveEncoder{
+public class DriveEncoder extends EncoderGroup {
 
 
   public void resetEncoder(){
