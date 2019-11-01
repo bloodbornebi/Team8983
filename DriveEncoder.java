@@ -1,7 +1,9 @@
+package org.firstinspires.ftc.teamcode;
+
 public class DriveEncoder{
 
 
-public void resetEncoder(){
+  public void resetEncoder(){
         LF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         RF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         LB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
