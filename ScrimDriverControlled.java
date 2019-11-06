@@ -108,6 +108,8 @@ public class ScrimDriverControlled extends LinearOpMode {
             RB.setPower(rightPower);
 
             //Mecanum wheels work in diagonal pairs, so LF-RB is a pair and RF-LB is a pair.
+            //Note: make it so that there is a threshold in the X direction. (strafe groups need a certain amount of X-input before the strafe groups activate.
+         //if(
             LF.setPower(leftStrafe);
             RB.setPower(leftStrafe);
             RF.setPower(rightStrafe);
