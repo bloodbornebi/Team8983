@@ -1,5 +1,6 @@
-public class autonomousFunction{
+//these are functions from 2018's robot autonomous
 
+public class autonomousFunction{
 
 public void resetEncoder(){
         LF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -13,6 +14,7 @@ public void resetEncoder(){
         RB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
     
+        //enables the bot to drive, putting in speed, left and right inches to move, and a timeout length
     public void encoderDrive(double speed,
                              double leftInches, double rightInches,
                              double timeout) {
@@ -63,7 +65,7 @@ public void resetEncoder(){
             sleep(250);   // optional pause after each move
         }
     }   
-    
+    //allows the robot to turn a fixed ammount.  As of 11-5-19 we have a much more useful and efficent turning function
         public void turn(){
     encoderDrive(.3, -4, -4.5, 5);
     sleep(1000);
