@@ -88,23 +88,34 @@ public class ScrimDriverControlled extends LinearOpMode {
             // Setup a variable for each drive wheel to save power level for telemetry
             double leftPower;
             double rightPower;
+            //Strafe groups refer to the direction in which the robot will move
+            double leftStrafe;
+            double rightStrafe;
 
             // Tank Mode uses one stick to control each wheel.
             // - This requires no math, but it is hard to drive forward slowly and keep straight.
             leftPower  = -gamepad1.left_stick_y ;
             rightPower = -gamepad1.right_stick_y ;
+            leftStrafe = -gamepad1.left_stick_x ;
+            rightStrafe = -gamepad1.right_stick_x ; 
 
+            
+            
             // Send calculated power to wheels
             LF.setPower(leftPower);
             LB.setPower(leftPower);
             RF.setPower(rightPower);
-            RB.setPower(RB);
+            RB.setPower(rightPower);
 
-            //Mecanum wheels work in diagonal pairs, so LF-RB is a pair and RF-LB is a pair. doubles will be LeftStrafePower and RightStrafePower. Inputs will be along the gamepad's X-axis.
+            //Mecanum wheels work in diagonal pairs, so LF-RB is a pair and RF-LB is a pair.
+            LF.setPower(leftStrafe);
+            RB.setPower(leftStrafe);
+            RF.setPower(rightStrafe);
+            LB.setPower(rightStrafe);
             
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+            telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower, leftStrafe, rightStrafe);
             telemetry.update();
         }
     }
