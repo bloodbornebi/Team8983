@@ -1,4 +1,4 @@
-  
+
 /* Copyright (c) 2017 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -62,6 +62,8 @@ public class TwoMotorDrive extends LinearOpMode {
     private DcMotor R = null;
     private DcMotor arm = null;
     private Servo lock;
+    private Servo left;
+    private Servo right;
 
     @Override
     public void runOpMode() {
@@ -75,6 +77,8 @@ public class TwoMotorDrive extends LinearOpMode {
         R = hardwareMap.get(DcMotor.class, "Right");
         arm = hardwareMap.get(DcMotor.class, "arm");
         lock = hardwareMap.get(Servo.class, "lock");
+        left = hardwareMap.get(Servo.class, "left");
+        right = hardwareMap.get(Servo.class,"right");
         double lockPos = 0;
         boolean rev = false;
         int stally = 0;
@@ -84,7 +88,7 @@ public class TwoMotorDrive extends LinearOpMode {
         R.setDirection(DcMotor.Direction.FORWARD);
         L.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
         R.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
-        
+
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -124,7 +128,7 @@ public class TwoMotorDrive extends LinearOpMode {
             } else {
               arm.setPower(0);
             }
-            
+
             // servo
             if (gamepad1.left_bumper) {
               lockPos = 0;
@@ -132,7 +136,7 @@ public class TwoMotorDrive extends LinearOpMode {
               lockPos = 1;
             }
             lock.setPosition(lockPos);
-            
+
             //robot reversals
             if (gamepad1.y) {
               L.setDirection(DcMotor.Direction.FORWARD);
@@ -141,7 +145,16 @@ public class TwoMotorDrive extends LinearOpMode {
               L.setDirection(DcMotor.Direction.REVERSE);
               R.setDirection(DcMotor.Direction.FORWARD);
             }
-            
+
+            //grabby Servo
+            if (gamepad1.x) {
+              left.setPosition(1);
+              right.setPosition(1);
+            } else if (gamepad1.a) {
+              left.setPosition(0);
+              right.setPosition(0);
+            }
+
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
