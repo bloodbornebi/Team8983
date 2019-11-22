@@ -52,9 +52,9 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="TwoMotor", group="Linear Opmode")
+@TeleOp(name="Mech4Drive", group="Linear Opmode")
 
-public class TwoMotorDrive extends LinearOpMode {
+public class Mech4Wheel extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -109,9 +109,9 @@ public class TwoMotorDrive extends LinearOpMode {
             double FORWARD = 1; //max
             double NEUTRAL = 0;
             double MOD = 0;
-            double drive = (FORWARD - gamepad1.left_stick_y()) - NEUTRAL;
-            double strafe = gamepad1.left_stick_x() - NEUTRAL;
-            double rotate = gamepad1.right_stick_x() - NEUTRAl;
+            double drive = (FORWARD - gamepad1.left_stick_y) - NEUTRAL;
+            double strafe = gamepad1.left_stick_x - NEUTRAL;
+            double rotate = gamepad1.right_stick_x - NEUTRAL;
 
             double lfPower = drive + strafe + rotate + MOD;
             double rfPower = drive - strafe + rotate + MOD;
@@ -174,7 +174,7 @@ public class TwoMotorDrive extends LinearOpMode {
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+            telemetry.addData("Motors", "leftf (%.2f), rightf (%.2f)", lfPower, rfPower);
             telemetry.addData("Servos","pos "+lockPos);
             telemetry.addData("Switches",stally);
             telemetry.update();
