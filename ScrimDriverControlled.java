@@ -99,14 +99,6 @@ public class ScrimDriverControlled extends LinearOpMode {
             leftStrafe = -gamepad1.left_stick_x ;
             rightStrafe = -gamepad1.right_stick_x ; 
 
-            
-            
-            // Send calculated power to wheels
-            LF.setPower(leftPower);
-            LB.setPower(leftPower);
-            RF.setPower(rightPower);
-            RB.setPower(rightPower);
-
             //Mecanum wheels work in diagonal pairs, so LF-RB is a pair and RF-LB is a pair.
             //Note: make it so that there is a threshold in the X direction. (strafe groups need a certain amount of X-input before the strafe groups activate.
          //if(
