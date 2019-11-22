@@ -163,6 +163,15 @@ public class TwoMotorDrive extends LinearOpMode {
               right.setPosition(0);
             }
 
+            //grabby Servo
+            if (gamepad1.x) {
+              left.setPosition(1);
+              right.setPosition(1);
+            } else if (gamepad1.a) {
+              left.setPosition(0);
+              right.setPosition(0);
+            }
+
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
