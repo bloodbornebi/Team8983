@@ -109,7 +109,7 @@ public class ScrimDriverControlled extends LinearOpMode {
             
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower, leftStrafe, rightStrafe);
+            telemetry.addData("Motors", "left (%.2f), right (%.2f), lstrafe (%.2f), rstrafe (%.2f)", leftPower, rightPower, leftStrafe, rightStrafe);
             telemetry.update();
         }
     }
