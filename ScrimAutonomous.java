@@ -27,6 +27,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+// TODO: drive to platform
+  // start straight
+  // encoder methods
+  // stretch: separate out encoder methods
+
+// TODO: grab platform
+  // reach out arm
+  // clasp
+  // pull closer
+
+// TODO: rotate platform
+  // spin to right position
+  // push platform
+  // release grip
+
+// TODO: park on tape
+  // orient to walls
+  // drive forward (encoder methods)
+
+// TODO: stretch: grab block
+  // drive to line
+  // scan blocks
+  // pick up block
+  // drive to platform
+
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
