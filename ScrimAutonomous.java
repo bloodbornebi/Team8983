@@ -30,10 +30,7 @@
 // DONE: drive to platform
   // stretch: separate out encoder methods
 
-// TODO: grab platform
-  // reach out arm
-  // clasp
-  // pull closer
+// DONE: grab platform
 
 // TODO: rotate platform
   // spin to right position
@@ -123,6 +120,10 @@ public class ScrimAutonomous extends LinearOpMode {
 
         // Driving to platform
         encoderDrive(DRIVE_SPEED,47.25,45.25,5); //This goes exactly to the platform - it may be necessary to not go quite so far
+
+        // Grab platform
+        left.setPosition(.25);
+        right.setPosition(.25);
     }
 
     /**
