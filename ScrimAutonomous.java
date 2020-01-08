@@ -27,9 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// TODO: drive to platform
-  // start straight
-  // encoder methods
+// DONE: drive to platform
   // stretch: separate out encoder methods
 
 // TODO: grab platform
@@ -117,10 +115,10 @@ public class ScrimAutonomous extends LinearOpMode {
 
         resetEncoder();
 
-        encoderDrive(DRIVE_SPEED,45,45,5);
-        encoderDrive(DRIVE_SPEED,-40,-40,5);
-        leftTurn(.5);
-        encoderDrive(DRIVE_SPEED,46,46,5);
+        /* End of set up code, real code begins */
+
+        // Driving to platform
+        encoderDrive(DRIVE_SPEED,47.25,45.25,5); //This goes exactly to the platform - it may be necessary to not go quite so far
     }
 
     /**
