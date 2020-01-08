@@ -169,15 +169,15 @@ public class ScrimAutonomous extends LinearOpMode {
         if (opModeIsActive()) {
             resetEncoder();
 
-            newLeftTarget = LF.getCurrentPosition() +
-            LB.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
-            newRightTarget = RF.getCurrentPosition() +
-            RB.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+            newLFTarget = LF.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            newRFTarget = RF.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+            newLBTarget = LB.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            newRBTarget = RB.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
 
-            LF.setTargetPosition(newLeftTarget);
-            LB.setTargetPosition(newLeftTarget);
-            RF.setTargetPosition(newRightTarget);
-            RB.setTargetPosition(newRightTarget);
+            LF.setTargetPosition(newLFTarget);
+            LB.setTargetPosition(newLBTarget);
+            RF.setTargetPosition(newRFTarget);
+            RB.setTargetPosition(newRBTarget);
 
             LF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             LB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -191,9 +191,9 @@ public class ScrimAutonomous extends LinearOpMode {
             RF.setPower(Math.abs(speed));
             RB.setPower(Math.abs(speed));
 
-            while (opModeIsActive() && (runtime.seconds() < timeout) && (left.isBusy() || right.isBusy())) {
-                telemetry.addData("Path1",  "Running to %7d :%7d", newLeftTarget,  newRightTarget);
-                telemetry.addData("Path2",  "Running at %7d :%7d",left.getCurrentPosition(), right.getCurrentPosition());
+            while (opModeIsActive() && (runtime.seconds() < timeout) && (LF.isBusy() || RF.isBusy() || LB.isBusy() || RB.isBusy())) {
+                telemetry.addData("Path1",  "Running to %7d :%7d", newLFTarget,  newRFTarget);
+                telemetry.addData("Path2",  "Running at %7d :%7d",LF.getCurrentPosition(), RF.getCurrentPosition());
                 telemetry.update();
             }
 
