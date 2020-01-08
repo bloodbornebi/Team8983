@@ -89,17 +89,21 @@ public class ScrimAutonomous extends LinearOpMode {
     static final double     DRIVE_SPEED             = 0.6;
     static final double     TURN_SPEED              = 0.5;
 
-    private DcMotor left;
-    private DcMotor right;
-    private DcMotor arm;
-    private Servo lock;
+    private DcMotor LF;
+    private DcMotor RF;
+    private DcMotor LB;
+    private DcMotor RB;
+    private Servo left;
+    private Servo right;
 
     @Override
     public void runOpMode() {
-        left = hardwareMap.get(DcMotor.class, "Left");
-        right = hardwareMap.get(DcMotor.class, "Right");
-        arm = hardwareMap.get(DcMotor.class, "arm");
-        lock = hardwareMap.get(Servo.class,"lock");
+        LF = hardwareMap.get(DcMotor.class, "left-front");
+        RF = hardwareMap.get(DcMotor.class, "right-front");
+        LB = hardwareMap.get(DcMotor.class, "left-back");
+        RB = hardwareMap.get(DcMotor.class, "right-back");
+        left = hardwareMap.get(Servo.class, "left");
+        right = hardwareMap.get(Servo.class, "right");
 
         left.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         right.setDirection(DcMotor.Direction.FORWARD); // Set to FORWARD if using AndyMark motors
