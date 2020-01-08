@@ -132,8 +132,10 @@ public class ScrimAutonomous extends LinearOpMode {
       double radius = 14;
       double circum = 14 * 2 * 3.1415;
       encoderDrive(TURN_SPEED, radius*angle, 0, 5);
-      left.setPower(0);
-      right.setPower(0);
+      LF.setPower(0);
+      LB.setPower(0);
+      RF.setPower(0);
+      RB.setPower(0);
       sleep (250);
     }
 
@@ -141,17 +143,23 @@ public class ScrimAutonomous extends LinearOpMode {
       double radius = 14;
       double circum = 14 * 2 * 3.1415;
       encoderDrive(TURN_SPEED, 0, circum*angle, 5);
-      left.setPower(0);
-      right.setPower(0);
+      LF.setPower(0);
+      LB.setPower(0);
+      RF.setPower(0);
+      RB.setPower(0);
       sleep (250);
     }
 
     public void resetEncoder(){
-        left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        LF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        LB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        RF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        RB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        LF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        LB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        RF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        RB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void encoderDrive(double speed, double leftInches, double rightInches, double timeout) {
@@ -161,19 +169,27 @@ public class ScrimAutonomous extends LinearOpMode {
         if (opModeIsActive()) {
             resetEncoder();
 
-            newLeftTarget = left.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
-            newRightTarget = right.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+            newLeftTarget = LF.getCurrentPosition() +
+            LB.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            newRightTarget = RF.getCurrentPosition() +
+            RB.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
 
-            left.setTargetPosition(newLeftTarget);
-            right.setTargetPosition(newRightTarget);
+            LF.setTargetPosition(newLeftTarget);
+            LB.setTargetPosition(newLeftTarget);
+            RF.setTargetPosition(newRightTarget);
+            RB.setTargetPosition(newRightTarget);
 
-            left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            LF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            LB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            RF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            RB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // reset the timeout time and start motion.
             runtime.reset();
-            left.setPower(Math.abs(speed));
-            right.setPower(Math.abs(speed));
+            LF.setPower(Math.abs(speed));
+            LB.setPower(Math.abs(speed));
+            RF.setPower(Math.abs(speed));
+            RB.setPower(Math.abs(speed));
 
             while (opModeIsActive() && (runtime.seconds() < timeout) && (left.isBusy() || right.isBusy())) {
                 telemetry.addData("Path1",  "Running to %7d :%7d", newLeftTarget,  newRightTarget);
@@ -181,8 +197,10 @@ public class ScrimAutonomous extends LinearOpMode {
                 telemetry.update();
             }
 
-            left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            LF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            LB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            RF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            RB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             sleep(250);   // optional pause after each move
         }
