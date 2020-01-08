@@ -98,10 +98,10 @@ public class ScrimAutonomous extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        LF = hardwareMap.get(DcMotor.class, "left-front");
-        RF = hardwareMap.get(DcMotor.class, "right-front");
-        LB = hardwareMap.get(DcMotor.class, "left-back");
-        RB = hardwareMap.get(DcMotor.class, "right-back");
+        LF = hardwareMap.get(DcMotor.class, "Left-Front");
+        RF = hardwareMap.get(DcMotor.class, "Right-Front");
+        LB = hardwareMap.get(DcMotor.class, "Left-Back");
+        RB = hardwareMap.get(DcMotor.class, "Right-Back");
         left = hardwareMap.get(Servo.class, "left");
         right = hardwareMap.get(Servo.class, "right");
 
