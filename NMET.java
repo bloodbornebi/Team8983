@@ -30,6 +30,8 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -49,16 +51,14 @@ import com.qualcomm.robotcore.util.Range;
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
+@Autonomous(name="NMET", group="Linear Opmode")
 
-@TeleOp(name="TwoMotor", group="Linear Opmode")
-
-public class TwoMotorDrive extends LinearOpMode {
+public class NMET extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor L = null;
-    private DcMotor R = null;
-    private DcMotor arm = null;
+    private DcMotorEx left = null;
+    private DcMotorEx right = null;
 
     @Override
     public void runOpMode() {
@@ -68,56 +68,34 @@ public class TwoMotorDrive extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        L = hardwareMap.get(DcMotor.class, "Left");
-        R = hardwareMap.get(DcMotor.class, "Right");
-        arm = hardwareMap.get(DcMotor.class, "arm");
+        left  = hardwareMap.get(DcMotorEx.class, "Left");
+        right = hardwareMap.get(DcMotorEx.class, "Right");
 
-        // Most robots need the motor on one side to be reversed to drive forward - Reverse the motor that runs backwards when connected directly to the battery
-        L.setDirection(DcMotor.Direction.FORWARD);
-        R.setDirection(DcMotor.Direction.REVERSE);
-
-        // Wait for the game to start (driver presses PLAY)
+        left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        
         waitForStart();
-        runtime.reset();
-
-        // run until the end of the match (driver presses STOP)
+        
+        // Set the motor's target position to 300 ticks
+        left.setTargetPosition(100);
+        right.setTargetPosition(100);
+        
+        // Switch to RUN_TO_POSITION mode
+        left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        
+        // Start the motor moving by setting the max velocity to 200 ticks per second
+        left.setVelocity(200);
+        right.setVelocity(-200);
+        telemetry.addData("Running",left.isBusy());
+        telemetry.update();
+        
+        // While the Op Mode is running, show the motor's status via telemetry
         while (opModeIsActive()) {
-
-            // Setup a variable for each drive wheel to save power level for telemetry
-            double leftPower;
-            double rightPower;
-
-            // Choose to drive using either Tank Mode, or POV Mode
-            // Comment out the method that's not used.  The default below is POV.
-
-            // POV Mode uses left stick to go forward, and right stick to turn.
-            // - This uses basic math to combine motions and is easier to drive straight.
-            //double drive = -gamepad1.left_stick_y;
-            //double turn  =  gamepad1.right_stick_x;
-            //leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
-            //rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
-
-            // Tank Mode uses one stick to control each wheel.
-            // - This requires no math, but it is hard to drive forward slowly and keep straight.
-            leftPower  = -gamepad1.left_stick_y ;
-            rightPower = -gamepad1.right_stick_y ;
-
-            // Send calculated power to wheels
-            L.setPower(leftPower);
-            R.setPower(rightPower);
-
-            // arm stuff
-            if (gamepad1.left_trigger > .2) {
-              arm.setPower(gamepad1.left_trigger);
-            } else if (gamepad1.right_trigger > .2) {
-              arm.setPower(-gamepad1.right_trigger);
-            } else {
-              arm.setPower(0);
-            }
-
-            // Show the elapsed game time and wheel power.
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+            telemetry.addData("velocity", left.getVelocity());
+            telemetry.addData("position", left.getCurrentPosition());
+            telemetry.addData("is at target", !left.isBusy());
+            telemetry.addData("running to ",left.getTargetPosition());
             telemetry.update();
         }
     }
