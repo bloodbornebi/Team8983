@@ -114,9 +114,9 @@ public class Mech4Wheel extends LinearOpMode {
             double rotate = gamepad1.right_stick_x - NEUTRAL;
 
             double lfPower = drive + strafe + rotate + MOD;
-            double rfPower = drive - strafe + rotate + MOD;
+            double rfPower = drive - strafe - rotate + MOD;
             double lbPower = drive - strafe + rotate + MOD;
-            double rbPower = drive + strafe + rotate - MOD;
+            double rbPower = drive + strafe - rotate + MOD;
 
             // Send calculated power to wheels
             LF.setPower(lfPower);
