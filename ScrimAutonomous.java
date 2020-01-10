@@ -122,8 +122,9 @@ public class ScrimAutonomous extends LinearOpMode {
         encoderDrive(DRIVE_SPEED,47.25,45.25,5); //This goes exactly to the platform - it may be necessary to not go quite so far
 
         // Grab platform
-        left.setPosition(.25);
-        right.setPosition(.25);
+        // FIXME: these may be the wrong numbers tho
+        left.setPosition(0);
+        right.setPosition(1);
     }
 
     /**
