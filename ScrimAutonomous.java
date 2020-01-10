@@ -125,6 +125,13 @@ public class ScrimAutonomous extends LinearOpMode {
         // FIXME: these may be the wrong numbers tho
         left.setPosition(0);
         right.setPosition(1);
+
+        // Turning to release platform
+        // FIXME: someone should in fact check that this is the right angle and the right way
+        leftTurn(.25);
+        // FIXME: these too may need to be changed
+        left.setPosition(1);
+        right.setPosition(0);
     }
 
     /**
