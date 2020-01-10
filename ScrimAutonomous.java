@@ -32,10 +32,7 @@
 
 // DONE: grab platform
 
-// TODO: rotate platform
-  // spin to right position
-  // push platform
-  // release grip
+// DONE: rotate platform
 
 // TODO: park on tape
   // orient to walls
@@ -132,6 +129,11 @@ public class ScrimAutonomous extends LinearOpMode {
         // FIXME: these too may need to be changed
         left.setPosition(1);
         right.setPosition(0);
+
+        // Park on tape
+        rightTurn(.25);
+        rightTurn(.25);
+        encoderDrive(DRIVE_SPEED, 35,35,5);
     }
 
     /**
