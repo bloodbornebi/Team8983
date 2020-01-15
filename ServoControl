@@ -1,50 +1,53 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.Gyroscope;
-import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@Autonomous(name="ScrimAutonomousRed", group="Linear Opmode")
+@TeleOp(name="TwoArmDriveTest", group="Linear Opmode")
 
-public class ScrimAutonomous extends LinearOpMode {
+
+public class TwoArmTest extends LinearOpMode {
     // Set up for encoder drive functions
     public ElapsedTime runtime = new ElapsedTime();
 
-
-
     private Servo left;
     private Servo right;
-    
+
     double RMR = 1;  //upper bound on servo rotation
     double LMR = 0;  //lower bound on servo rotation
     double LI = -0.1; //left increment
     double RI = 0.1; //right increment 
     double leftCurPos = 0;
     double rightCurPos = 0;
-    
+
     @Override
     public void runOpMode() {
-    
+
     left = hardwareMap.get(Servo.class, "left");
     right = hardwareMap.get(Servo.class, "right");
-    
-    leftCurPos = left.getCurrentPosition();
-    rightCurPos = right.getCurrentPosition();
-    
-    if(gamepad.left_bumper && leftCurPos <= RMR && rightCurPos >= LMR){
-    left.setpostion(leftCurPos - LI);
-    right.setpostion(rightCurPos - LI);
+
+    leftCurPos = left.getPosition();
+    rightCurPos = right.getPosition();
+
+    if(gamepad1.left_bumper && leftCurPos <= RMR && rightCurPos >= LMR){
+    left.setPosition(leftCurPos - LI);
+    right.setPosition(rightCurPos - LI);
     }
+
+    if(gamepad1.right_bumper && rightCurPos <= RMR && leftCurPos >= LMR){
+    left.setPosition(leftCurPos + RI);
+    right.setPosition(rightCurPos + RI);
     
-    if(gamepad.right_bumper && rightCurPos <= RMR && leftCurPos >= LMR){
-    left.setpostion(leftCurPos + RI);
-    right.setpostion(rightCurPos + RI);
-    }   
- }
+        }   
+        
+    telemetry.addData("Servo Left Position", left.getPosition());
+    telemetry.addData("Servo Right Position", right.getPosition());
+    telemetry.addData("Status", "Running");
+    telemetry.update();
+    }
+}
