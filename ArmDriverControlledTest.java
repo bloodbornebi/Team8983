@@ -56,3 +56,7 @@ public void runOpMode() {
      double armPower;
      
      armPower = gamepad1.left_trigger ; 
+         
+     }
+   }
+}
