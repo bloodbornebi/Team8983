@@ -53,10 +53,10 @@ public void runOpMode() {
      
      while (opModeIsActive()) {
      
-     double armPower;
+     float armPower;
      
      armPower = gamepad1.left_trigger ; 
-         
+     armDrive.setPower(armPower) ;
      }
    }
 }
