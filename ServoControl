@@ -27,7 +27,18 @@ public class TwoArmTest extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        
+        telemetry.addData("Status", "Initialized");
+        telemetry.update();
 
+        // Wait for the game to start (driver presses PLAY)
+        waitForStart();
+        runtime.reset();
+
+        // run until the end of the match (driver presses STOP)
+        while (opModeIsActive()) {
+    
+    
     left = hardwareMap.get(Servo.class, "left");
     right = hardwareMap.get(Servo.class, "right");
 
@@ -42,12 +53,11 @@ public class TwoArmTest extends LinearOpMode {
     if(gamepad1.right_bumper && rightCurPos <= RMR && leftCurPos >= LMR){
     left.setPosition(leftCurPos + RI);
     right.setPosition(rightCurPos + RI);
-    
         }   
         
     telemetry.addData("Servo Left Position", left.getPosition());
     telemetry.addData("Servo Right Position", right.getPosition());
-    telemetry.addData("Status", "Running");
-    telemetry.update();
+
+        }
     }
 }
