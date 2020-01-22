@@ -63,7 +63,6 @@ public class Mech4Wheel extends LinearOpMode {
     private DcMotor LB = null;
     private DcMotor RB = null;
     private DcMotor arm = null;
-    private Servo lock;
     private Servo left;
     private Servo right;
 
@@ -79,13 +78,9 @@ public class Mech4Wheel extends LinearOpMode {
         RF = hardwareMap.get(DcMotor.class, "Right-Front");
         LB = hardwareMap.get(DcMotor.class,"Left-Back");
         RB = hardwareMap.get(DcMotor.class, "Right-Back");
-        arm = hardwareMap.get(DcMotor.class, "arm");
-        lock = hardwareMap.get(Servo.class, "lock");
         left = hardwareMap.get(Servo.class, "left");
         right = hardwareMap.get(Servo.class,"right");
-        double lockPos = 0;
-        boolean rev = false;
-        int stally = 0;
+        arm = hardwareMap.get(DcMotor.class, "arm");
 
         // Most robots need the motor on one side to be reversed to drive forward - Reverse the motor that runs backwards when connected directly to the battery
         LF.setDirection(DcMotor.Direction.REVERSE);
@@ -146,6 +141,13 @@ public class Mech4Wheel extends LinearOpMode {
               right.setPosition(0);
             }
 
+            //arm power
+            if (gamepad1.left_trigger > 0) {
+              arm.setPower(gamepad1.left_trigger);
+            } else if (gamepad1.right_trigger > 0) {
+              arm.setPower(-gamepad1.right_trigger);
+            }
+            
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "leftf (%.2f), rightf (%.2f)", lfPower, rfPower);
