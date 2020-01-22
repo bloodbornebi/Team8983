@@ -66,6 +66,8 @@ public class Mech4Wheel extends LinearOpMode {
     private DcMotor armend = null;
     private Servo left;
     private Servo right;
+    private Servo gl;
+    private Servo gr;
 
     @Override
     public void runOpMode() {
@@ -83,6 +85,8 @@ public class Mech4Wheel extends LinearOpMode {
         right = hardwareMap.get(Servo.class,"right");
         arm = hardwareMap.get(DcMotor.class, "arm");
         armend = hardwareMap.get(DcMotor.class, "armend");
+        gl = hardwareMap.get(DcMotor.class,"gl");
+        gr = hardwareMap.get(DcMotor.class,"gr");
 
         // Most robots need the motor on one side to be reversed to drive forward - Reverse the motor that runs backwards when connected directly to the battery
         LF.setDirection(DcMotor.Direction.REVERSE);
