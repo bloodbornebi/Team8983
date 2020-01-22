@@ -1,3 +1,4 @@
+
 /* Copyright (c) 2017 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -30,6 +31,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -50,14 +52,20 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Scrim", group="Linear Opmode")
+@TeleOp(name="Mech4Drive", group="Linear Opmode")
 
-public class ScrimDriverControlled extends LinearOpMode {
+public class Mech4Wheel extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftDrive = null;
-    private DcMotor rightDrive = null;
+    private DcMotor LF = null;
+    private DcMotor RF = null;
+    private DcMotor LB = null;
+    private DcMotor RB = null;
+    private DcMotor arm = null;
+    private Servo lock;
+    private Servo left;
+    private Servo right;
 
     @Override
     public void runOpMode() {
@@ -67,16 +75,24 @@ public class ScrimDriverControlled extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        LF  = hardwareMap.get(DcMotor.class, "Left-Front");
+        LF = hardwareMap.get(DcMotor.class, "Left-Front");
         RF = hardwareMap.get(DcMotor.class, "Right-Front");
-        LB  = hardwareMap.get(DcMotor.class, "Left-Back");
+        LB = hardwareMap.get(DcMotor.class,"Left-Back");
         RB = hardwareMap.get(DcMotor.class, "Right-Back");
+        arm = hardwareMap.get(DcMotor.class, "arm");
+        lock = hardwareMap.get(Servo.class, "lock");
+        left = hardwareMap.get(Servo.class, "left");
+        right = hardwareMap.get(Servo.class,"right");
+        double lockPos = 0;
+        boolean rev = false;
+        int stally = 0;
 
         // Most robots need the motor on one side to be reversed to drive forward - Reverse the motor that runs backwards when connected directly to the battery
-        LF.setDirection(DcMotor.Direction.FORWARD);
-        RF.setDirection(DcMotor.Direction.REVERSE);
-        LB.setDirection(DcMotor.Direction.FORWARD);
-        RB.setDirection(DcMotor.Direction.REVERSE);
+        LF.setDirection(DcMotor.Direction.REVERSE);
+        RF.setDirection(DcMotor.Direction.FORWARD);
+        LF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
+        RF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
+
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -88,28 +104,79 @@ public class ScrimDriverControlled extends LinearOpMode {
             // Setup a variable for each drive wheel to save power level for telemetry
             double leftPower;
             double rightPower;
-            //Strafe groups refer to the direction in which the robot will move
-            double leftStrafe;
-            double rightStrafe;
 
-            // Tank Mode uses one stick to control each wheel.
-            // - This requires no math, but it is hard to drive forward slowly and keep straight.
-            leftPower  = -gamepad1.left_stick_y ;
-            rightPower = -gamepad1.right_stick_y ;
-            leftStrafe = -gamepad1.left_stick_x ;
-            rightStrafe = -gamepad1.right_stick_x ; 
+            //drive code
+            double FORWARD = 1; //max
+            double NEUTRAL = 0;
+            double MOD = 0;
+            double drive = (FORWARD - gamepad1.left_stick_y) - NEUTRAL;
+            double strafe = gamepad1.left_stick_x - NEUTRAL;
+            double rotate = gamepad1.right_stick_x - NEUTRAL;
 
-            //Mecanum wheels work in diagonal pairs, so LF-RB is a pair and RF-LB is a pair.
-            //Note: make it so that there is a threshold in the X direction. (strafe groups need a certain amount of X-input before the strafe groups activate.
-         //if(
-            LF.setPower(leftStrafe);
-            RB.setPower(leftStrafe);
-            RF.setPower(rightStrafe);
-            LB.setPower(rightStrafe);
-            
+            double lfPower = drive + strafe + rotate + MOD;
+            double rfPower = drive - strafe + rotate + MOD;
+            double lbPower = drive - strafe + rotate + MOD;
+            double rbPower = drive + strafe + rotate - MOD;
+
+            // Send calculated power to wheels
+            LF.setPower(lfPower);
+            RF.setPower(rfPower);
+            LB.setPower(lbPower);
+            RB.setPower(rbPower);
+
+            // arm stuff
+            if (gamepad1.left_trigger > .2) {
+              arm.setPower(gamepad1.left_trigger);
+            } else if (gamepad1.right_trigger > .2) {
+              arm.setPower(-gamepad1.right_trigger);
+            } else {
+              arm.setPower(0);
+            }
+
+            // servo
+            if (gamepad1.left_bumper) {
+              lockPos = 0;
+            } else if (gamepad1.right_bumper) {
+              lockPos = 1;
+            }
+            lock.setPosition(lockPos);
+
+            //robot reversals
+            if (gamepad1.y) {
+              LF.setDirection(DcMotor.Direction.FORWARD);
+              RF.setDirection(DcMotor.Direction.REVERSE);
+              LB.setDirection(DcMotor.Direction.FORWARD);
+              RB.setDirection(DcMotor.Direction.REVERSE);
+            } else if (gamepad1.b) {
+              LF.setDirection(DcMotor.Direction.REVERSE);
+              RF.setDirection(DcMotor.Direction.FORWARD);
+              LB.setDirection(DcMotor.Direction.REVERSE);
+              RB.setDirection(DcMotor.Direction.FORWARD);
+            }
+
+            //grabby Servo
+            if (gamepad1.x) {
+              left.setPosition(1);
+              right.setPosition(1);
+            } else if (gamepad1.a) {
+              left.setPosition(0);
+              right.setPosition(0);
+            }
+
+            //grabby Servo
+            if (gamepad1.x) {
+              left.setPosition(1);
+              right.setPosition(1);
+            } else if (gamepad1.a) {
+              left.setPosition(0);
+              right.setPosition(0);
+            }
+
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "left (%.2f), right (%.2f), lstrafe (%.2f), rstrafe (%.2f)", leftPower, rightPower, leftStrafe, rightStrafe);
+            telemetry.addData("Motors", "leftf (%.2f), rightf (%.2f)", lfPower, rfPower);
+            telemetry.addData("Servos","pos "+lockPos);
+            telemetry.addData("Switches",stally);
             telemetry.update();
         }
     }

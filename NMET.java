@@ -30,6 +30,8 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -49,15 +51,14 @@ import com.qualcomm.robotcore.util.Range;
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
+@Autonomous(name="NMET", group="Linear Opmode")
 
-@TeleOp(name="Scrim", group="Linear Opmode")
-
-public class ScrimDriverControlled extends LinearOpMode {
+public class NMET extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftDrive = null;
-    private DcMotor rightDrive = null;
+    private DcMotorEx left = null;
+    private DcMotorEx right = null;
 
     @Override
     public void runOpMode() {
@@ -67,49 +68,34 @@ public class ScrimDriverControlled extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        LF  = hardwareMap.get(DcMotor.class, "Left-Front");
-        RF = hardwareMap.get(DcMotor.class, "Right-Front");
-        LB  = hardwareMap.get(DcMotor.class, "Left-Back");
-        RB = hardwareMap.get(DcMotor.class, "Right-Back");
+        left  = hardwareMap.get(DcMotorEx.class, "Left");
+        right = hardwareMap.get(DcMotorEx.class, "Right");
 
-        // Most robots need the motor on one side to be reversed to drive forward - Reverse the motor that runs backwards when connected directly to the battery
-        LF.setDirection(DcMotor.Direction.FORWARD);
-        RF.setDirection(DcMotor.Direction.REVERSE);
-        LB.setDirection(DcMotor.Direction.FORWARD);
-        RB.setDirection(DcMotor.Direction.REVERSE);
-
-        // Wait for the game to start (driver presses PLAY)
+        left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        
         waitForStart();
-        runtime.reset();
-
-        // run until the end of the match (driver presses STOP)
+        
+        // Set the motor's target position to 300 ticks
+        left.setTargetPosition(100);
+        right.setTargetPosition(100);
+        
+        // Switch to RUN_TO_POSITION mode
+        left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        
+        // Start the motor moving by setting the max velocity to 200 ticks per second
+        left.setVelocity(200);
+        right.setVelocity(-200);
+        telemetry.addData("Running",left.isBusy());
+        telemetry.update();
+        
+        // While the Op Mode is running, show the motor's status via telemetry
         while (opModeIsActive()) {
-
-            // Setup a variable for each drive wheel to save power level for telemetry
-            double leftPower;
-            double rightPower;
-            //Strafe groups refer to the direction in which the robot will move
-            double leftStrafe;
-            double rightStrafe;
-
-            // Tank Mode uses one stick to control each wheel.
-            // - This requires no math, but it is hard to drive forward slowly and keep straight.
-            leftPower  = -gamepad1.left_stick_y ;
-            rightPower = -gamepad1.right_stick_y ;
-            leftStrafe = -gamepad1.left_stick_x ;
-            rightStrafe = -gamepad1.right_stick_x ; 
-
-            //Mecanum wheels work in diagonal pairs, so LF-RB is a pair and RF-LB is a pair.
-            //Note: make it so that there is a threshold in the X direction. (strafe groups need a certain amount of X-input before the strafe groups activate.
-         //if(
-            LF.setPower(leftStrafe);
-            RB.setPower(leftStrafe);
-            RF.setPower(rightStrafe);
-            LB.setPower(rightStrafe);
-            
-            // Show the elapsed game time and wheel power.
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "left (%.2f), right (%.2f), lstrafe (%.2f), rstrafe (%.2f)", leftPower, rightPower, leftStrafe, rightStrafe);
+            telemetry.addData("velocity", left.getVelocity());
+            telemetry.addData("position", left.getCurrentPosition());
+            telemetry.addData("is at target", !left.isBusy());
+            telemetry.addData("running to ",left.getTargetPosition());
             telemetry.update();
         }
     }
