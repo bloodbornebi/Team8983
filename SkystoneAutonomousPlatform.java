@@ -1,3 +1,4 @@
+
 /* Copyright (c) 2017 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -27,30 +28,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// DONE: drive to platform
-  // stretch: separate out encoder methods
-
-// DONE: grab platform
-
-// DONE: rotate platform
-
-// TODO: park on tape
-  // orient to walls
-  // drive forward (encoder methods)
-
-// TODO: stretch: grab block
-  // drive to line
-  // scan blocks
-  // pick up block
-  // drive to platform
-
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.Gyroscope;
-import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -70,154 +51,120 @@ import com.qualcomm.robotcore.util.Range;
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@Autonomous(name="Platform", group="Linear Opmode")
 
-public class ScrimAutonomous extends LinearOpMode {
-    // Set up for encoder drive functions
-    public ElapsedTime runtime = new ElapsedTime();
-    static final double GEAR = 1.5;
-    static final double     COUNTS_PER_MOTOR_REV    = 288 ;    // eg: TETRIX Motor Encoder
-    // This is < 1.0 if geared UP
-    static final double     WHEEL_DIAMETER_INCHES   = 3.54 ;     // For figuring circumference
-    static final double     COUNTS_PER_INCH         = GEAR * (COUNTS_PER_MOTOR_REV) / (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double     DRIVE_SPEED             = 0.6;
-    static final double     TURN_SPEED              = 0.5;
+@TeleOp(name="Mech4Drive", group="Linear Opmode")
 
-    private DcMotor LF;
-    private DcMotor RF;
-    private DcMotor LB;
-    private DcMotor RB;
+public class Mech4Wheel extends LinearOpMode {
+
+    // Declare OpMode members.
+    private ElapsedTime runtime = new ElapsedTime();
+    private DcMotor LF = null;
+    private DcMotor RF = null;
+    private DcMotor LB = null;
+    private DcMotor RB = null;
+    private DcMotor arm = null;
+    private DcMotor armend = null;
     private Servo left;
     private Servo right;
-    private DcMotor arm;
-    private DcMotor armend;
 
     @Override
     public void runOpMode() {
+        telemetry.addData("Status", "Initialized");
+        telemetry.update();
+
+        // Initialize the hardware variables. Note that the strings used here as parameters
+        // to 'get' must correspond to the names assigned during the robot configuration
+        // step (using the FTC Robot Controller app on the phone).
         LF = hardwareMap.get(DcMotor.class, "Left-Front");
         RF = hardwareMap.get(DcMotor.class, "Right-Front");
-        LB = hardwareMap.get(DcMotor.class, "Left-Back");
+        LB = hardwareMap.get(DcMotor.class,"Left-Back");
         RB = hardwareMap.get(DcMotor.class, "Right-Back");
         left = hardwareMap.get(Servo.class, "left");
-        right = hardwareMap.get(Servo.class, "right");
+        right = hardwareMap.get(Servo.class,"right");
         arm = hardwareMap.get(DcMotor.class, "arm");
         armend = hardwareMap.get(DcMotor.class, "armend");
 
-        left.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
-        right.setDirection(DcMotor.Direction.FORWARD); // Set to FORWARD if using AndyMark motors
+        // Most robots need the motor on one side to be reversed to drive forward - Reverse the motor that runs backwards when connected directly to the battery
+        LF.setDirection(DcMotor.Direction.REVERSE);
+        RF.setDirection(DcMotor.Direction.FORWARD);
+        LF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
+        RF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
 
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
+        runtime.reset();
 
         // run until the end of the match (driver presses STOP)
-        telemetry.addData("Status", "Running");
-        telemetry.update();
+        while (opModeIsActive()) {
 
-        resetEncoder();
+            // Setup a variable for each drive wheel to save power level for telemetry
+            double leftPower;
+            double rightPower;
 
-        /* End of set up code, real code begins */
+            //drive code
+            double FORWARD = 1; //max
+            double NEUTRAL = 0;
+            double MOD = 0;
+            double drive = gamepad1.left_stick_y;
+            double strafe = gamepad1.left_stick_x - NEUTRAL;
+            double rotate = gamepad1.right_stick_x - NEUTRAL;
 
-        // Driving to platform
-        encoderDrive(DRIVE_SPEED,47.25,45.25,5); //This goes exactly to the platform - it may be necessary to not go quite so far
+            double lfPower = drive + strafe + rotate + MOD;
+            double rfPower = drive - strafe - rotate + MOD;
+            double lbPower = drive - strafe + rotate + MOD;
+            double rbPower = drive + strafe - rotate + MOD;
 
-        // Grab platform
-        // FIXME: these may be the wrong numbers tho
-        left.setPosition(0);
-        right.setPosition(1);
+            // Send calculated power to wheels
+            LF.setPower(lfPower);
+            RF.setPower(rfPower);
+            LB.setPower(lbPower);
+            RB.setPower(rbPower);
 
-        // Turning to release platform
-        // FIXME: someone should in fact check that this is the right angle and the right way
-        leftTurn(.25);
-        // FIXME: these too may need to be changed
-        left.setPosition(1);
-        right.setPosition(0);
-
-        // Park on tape
-        rightTurn(.25);
-        rightTurn(.25);
-        encoderDrive(DRIVE_SPEED, 35,35,5);
-    }
-
-    /**
-     * @param angle Degree to turn. 360=1.
-     */
-    public void leftTurn(double angle){
-      double radius = 14;
-      double circum = 14 * 2 * 3.1415;
-      encoderDrive(TURN_SPEED, radius*angle, 0, 5);
-      LF.setPower(0);
-      LB.setPower(0);
-      RF.setPower(0);
-      RB.setPower(0);
-      sleep (250);
-    }
-
-    public void rightTurn(double angle){
-      double radius = 14;
-      double circum = 14 * 2 * 3.1415;
-      encoderDrive(TURN_SPEED, 0, circum*angle, 5);
-      LF.setPower(0);
-      LB.setPower(0);
-      RF.setPower(0);
-      RB.setPower(0);
-      sleep (250);
-    }
-
-    public void resetEncoder(){
-        LF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        LB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        RF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        RB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        LF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        LB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        RF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        RB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
-
-    public void encoderDrive(double speed, double leftInches, double rightInches, double timeout) {
-        int newLeftTarget;
-        int newRightTarget;
-
-        if (opModeIsActive()) {
-            resetEncoder();
-
-            newLFTarget = LF.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
-            newRFTarget = RF.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
-            newLBTarget = LB.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
-            newRBTarget = RB.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
-
-            LF.setTargetPosition(newLFTarget);
-            LB.setTargetPosition(newLBTarget);
-            RF.setTargetPosition(newRFTarget);
-            RB.setTargetPosition(newRBTarget);
-
-            LF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            LB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            RF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            RB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            // reset the timeout time and start motion.
-            runtime.reset();
-            LF.setPower(Math.abs(speed));
-            LB.setPower(Math.abs(speed));
-            RF.setPower(Math.abs(speed));
-            RB.setPower(Math.abs(speed));
-
-            while (opModeIsActive() && (runtime.seconds() < timeout) && (LF.isBusy() || RF.isBusy() || LB.isBusy() || RB.isBusy())) {
-                telemetry.addData("Path1",  "Running to %7d :%7d", newLFTarget,  newRFTarget);
-                telemetry.addData("Path2",  "Running at %7d :%7d",LF.getCurrentPosition(), RF.getCurrentPosition());
-                telemetry.update();
+            //robot reversals
+            if (gamepad1.y) {
+              LF.setDirection(DcMotor.Direction.FORWARD);
+              RF.setDirection(DcMotor.Direction.REVERSE);
+              LB.setDirection(DcMotor.Direction.FORWARD);
+              RB.setDirection(DcMotor.Direction.REVERSE);
+            } else if (gamepad1.b) {
+              LF.setDirection(DcMotor.Direction.REVERSE);
+              RF.setDirection(DcMotor.Direction.FORWARD);
+              LB.setDirection(DcMotor.Direction.REVERSE);
+              RB.setDirection(DcMotor.Direction.FORWARD);
             }
 
-            LF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            LB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            RF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            RB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            //grabby Servo
+            if (gamepad1.right_bumper) {
+              left.setPosition(0);
+              right.setPosition(1);
+            } else if (gamepad1.left_bumper) {
+              left.setPosition(.75);
+              right.setPosition(.25);
+            }
 
-            sleep(250);   // optional pause after each move
+            //arm power
+            if (gamepad1.left_stick_button) {
+              arm.setPower(-gamepad1.left_trigger);
+            } else if (gamepad1.left_trigger > 0) {
+              arm.setPower(gamepad1.left_trigger);
+            } else {
+              arm.setPower(0);
+            }
+
+            //extension
+            if (gamepad1.right_stick_button) {
+              armend.setPower(gamepad1.right_trigger);
+            } else if (gamepad1.right_trigger > 0) {
+              armend.setPower(-gamepad1.right_trigger);
+            } else {
+              armend.setPower(0);
+            }
+
+            // Show the elapsed game time and wheel power.
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Motors", "leftf (%.2f), rightf (%.2f)", lfPower, rfPower);
+            telemetry.update();
         }
     }
 }
