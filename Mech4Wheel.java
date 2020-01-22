@@ -124,23 +124,6 @@ public class Mech4Wheel extends LinearOpMode {
             LB.setPower(lbPower);
             RB.setPower(rbPower);
 
-            // arm stuff
-            if (gamepad1.left_trigger > .2) {
-              arm.setPower(gamepad1.left_trigger);
-            } else if (gamepad1.right_trigger > .2) {
-              arm.setPower(-gamepad1.right_trigger);
-            } else {
-              arm.setPower(0);
-            }
-
-            // servo
-            if (gamepad1.left_bumper) {
-              lockPos = 0;
-            } else if (gamepad1.right_bumper) {
-              lockPos = 1;
-            }
-            lock.setPosition(lockPos);
-
             //robot reversals
             if (gamepad1.y) {
               LF.setDirection(DcMotor.Direction.FORWARD);
@@ -155,19 +138,10 @@ public class Mech4Wheel extends LinearOpMode {
             }
 
             //grabby Servo
-            if (gamepad1.x) {
+            if (gamepad1.left_bumper) {
               left.setPosition(1);
               right.setPosition(1);
-            } else if (gamepad1.a) {
-              left.setPosition(0);
-              right.setPosition(0);
-            }
-
-            //grabby Servo
-            if (gamepad1.x) {
-              left.setPosition(1);
-              right.setPosition(1);
-            } else if (gamepad1.a) {
+            } else if (gamepad1.right_bumper) {
               left.setPosition(0);
               right.setPosition(0);
             }
