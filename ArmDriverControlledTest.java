@@ -55,7 +55,8 @@ public void runOpMode() {
      
      float armPower;
      
-     armPower = gamepad1.left_trigger ; 
+     armPower = gamepad1.left_trigger ;
+     armPower = -gamepad1.right_trigger ; 
      armDrive.setPower(armPower) ;
      }
    }
