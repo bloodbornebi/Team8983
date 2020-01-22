@@ -89,6 +89,8 @@ public class ScrimAutonomous extends LinearOpMode {
     private DcMotor RB;
     private Servo left;
     private Servo right;
+    private DcMotor arm;
+    private DcMotor armend;
 
     @Override
     public void runOpMode() {
@@ -98,6 +100,8 @@ public class ScrimAutonomous extends LinearOpMode {
         RB = hardwareMap.get(DcMotor.class, "Right-Back");
         left = hardwareMap.get(Servo.class, "left");
         right = hardwareMap.get(Servo.class, "right");
+        arm = hardwareMap.get(DcMotor.class, "arm");
+        armend = hardwareMap.get(DcMotor.class, "armend");
 
         left.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         right.setDirection(DcMotor.Direction.FORWARD); // Set to FORWARD if using AndyMark motors
