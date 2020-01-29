@@ -37,26 +37,31 @@ public class TwoArmTest extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-    
-    
-    left = hardwareMap.get(Servo.class, "left");
-    right = hardwareMap.get(Servo.class, "right");
+            left = hardwareMap.get(Servo.class, "left");
+            right = hardwareMap.get(Servo.class, "right");
+            
+            telemetry.addData("Got hardware map");
+            telemetry.update();
+            
+            leftCurPos = left.getPosition();
+            rightCurPos = right.getPosition();
 
-    leftCurPos = left.getPosition();
-    rightCurPos = right.getPosition();
+            if(gamepad1.left_bumper && leftCurPos <= RMR && rightCurPos >= LMR){
+                left.setPosition(leftCurPos - LI);
+                right.setPosition(rightCurPos - LI);
+                telemetry.addData("Rotating Forward", rightCurPos);
+                telemetry.update();
+            }
 
-    if(gamepad1.left_bumper && leftCurPos <= RMR && rightCurPos >= LMR){
-    left.setPosition(leftCurPos - LI);
-    right.setPosition(rightCurPos - LI);
-    }
-
-    if(gamepad1.right_bumper && rightCurPos <= RMR && leftCurPos >= LMR){
-    left.setPosition(leftCurPos + RI);
-    right.setPosition(rightCurPos + RI);
-        }   
+            if(gamepad1.right_bumper && rightCurPos <= RMR && leftCurPos >= LMR){
+                left.setPosition(leftCurPos + RI);
+                right.setPosition(rightCurPos + RI);
+                telemetry.addData("Rotating Backward", leftCurPos);
+                telemetry.update();
+            }   
         
-    telemetry.addData("Servo Left Position", left.getPosition());
-    telemetry.addData("Servo Right Position", right.getPosition());
+            telemetry.addData("Got to end");
+            telemetry.update();
 
         }
     }
