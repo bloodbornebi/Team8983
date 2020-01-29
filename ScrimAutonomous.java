@@ -27,6 +27,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+// DONE: drive to platform
+  // stretch: separate out encoder methods
+
+// DONE: grab platform
+
+// DONE: rotate platform
+
+// TODO: park on tape
+  // orient to walls
+  // drive forward (encoder methods)
+
+// TODO: stretch: grab block
+  // drive to line
+  // scan blocks
+  // pick up block
+  // drive to platform
+
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -53,7 +70,7 @@ import com.qualcomm.robotcore.util.Range;
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@Autonomous(name="ScrimAutonomousRed", group="Linear Opmode")
+@Autonomous(name="Platform", group="Linear Opmode")
 
 public class ScrimAutonomous extends LinearOpMode {
     // Set up for encoder drive functions
@@ -66,17 +83,21 @@ public class ScrimAutonomous extends LinearOpMode {
     static final double     DRIVE_SPEED             = 0.6;
     static final double     TURN_SPEED              = 0.5;
 
-    private DcMotor left;
-    private DcMotor right;
-    private DcMotor arm;
-    private Servo lock;
+    private DcMotor LF;
+    private DcMotor RF;
+    private DcMotor LB;
+    private DcMotor RB;
+    private Servo left;
+    private Servo right;
 
     @Override
     public void runOpMode() {
-        left = hardwareMap.get(DcMotor.class, "Left");
-        right = hardwareMap.get(DcMotor.class, "Right");
-        arm = hardwareMap.get(DcMotor.class, "arm");
-        lock = hardwareMap.get(Servo.class,"lock");
+        LF = hardwareMap.get(DcMotor.class, "Left-Front");
+        RF = hardwareMap.get(DcMotor.class, "Right-Front");
+        LB = hardwareMap.get(DcMotor.class, "Left-Back");
+        RB = hardwareMap.get(DcMotor.class, "Right-Back");
+        left = hardwareMap.get(Servo.class, "left");
+        right = hardwareMap.get(Servo.class, "right");
 
         left.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         right.setDirection(DcMotor.Direction.FORWARD); // Set to FORWARD if using AndyMark motors
@@ -92,10 +113,27 @@ public class ScrimAutonomous extends LinearOpMode {
 
         resetEncoder();
 
-        encoderDrive(DRIVE_SPEED,45,45,5);
-        encoderDrive(DRIVE_SPEED,-40,-40,5);
-        leftTurn(.5);
-        encoderDrive(DRIVE_SPEED,46,46,5);
+        /* End of set up code, real code begins */
+
+        // Driving to platform
+        encoderDrive(DRIVE_SPEED,47.25,45.25,5); //This goes exactly to the platform - it may be necessary to not go quite so far
+
+        // Grab platform
+        // FIXME: these may be the wrong numbers tho
+        left.setPosition(0);
+        right.setPosition(1);
+
+        // Turning to release platform
+        // FIXME: someone should in fact check that this is the right angle and the right way
+        leftTurn(.25);
+        // FIXME: these too may need to be changed
+        left.setPosition(1);
+        right.setPosition(0);
+
+        // Park on tape
+        rightTurn(.25);
+        rightTurn(.25);
+        encoderDrive(DRIVE_SPEED, 35,35,5);
     }
 
     /**
@@ -105,8 +143,10 @@ public class ScrimAutonomous extends LinearOpMode {
       double radius = 14;
       double circum = 14 * 2 * 3.1415;
       encoderDrive(TURN_SPEED, radius*angle, 0, 5);
-      left.setPower(0);
-      right.setPower(0);
+      LF.setPower(0);
+      LB.setPower(0);
+      RF.setPower(0);
+      RB.setPower(0);
       sleep (250);
     }
 
@@ -114,17 +154,23 @@ public class ScrimAutonomous extends LinearOpMode {
       double radius = 14;
       double circum = 14 * 2 * 3.1415;
       encoderDrive(TURN_SPEED, 0, circum*angle, 5);
-      left.setPower(0);
-      right.setPower(0);
+      LF.setPower(0);
+      LB.setPower(0);
+      RF.setPower(0);
+      RB.setPower(0);
       sleep (250);
     }
 
     public void resetEncoder(){
-        left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        LF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        LB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        RF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        RB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        LF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        LB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        RF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        RB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void encoderDrive(double speed, double leftInches, double rightInches, double timeout) {
@@ -134,28 +180,38 @@ public class ScrimAutonomous extends LinearOpMode {
         if (opModeIsActive()) {
             resetEncoder();
 
-            newLeftTarget = left.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
-            newRightTarget = right.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+            newLFTarget = LF.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            newRFTarget = RF.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+            newLBTarget = LB.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            newRBTarget = RB.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
 
-            left.setTargetPosition(newLeftTarget);
-            right.setTargetPosition(newRightTarget);
+            LF.setTargetPosition(newLFTarget);
+            LB.setTargetPosition(newLBTarget);
+            RF.setTargetPosition(newRFTarget);
+            RB.setTargetPosition(newRBTarget);
 
-            left.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            right.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            LF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            LB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            RF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            RB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // reset the timeout time and start motion.
             runtime.reset();
-            left.setPower(Math.abs(speed));
-            right.setPower(Math.abs(speed));
+            LF.setPower(Math.abs(speed));
+            LB.setPower(Math.abs(speed));
+            RF.setPower(Math.abs(speed));
+            RB.setPower(Math.abs(speed));
 
-            while (opModeIsActive() && (runtime.seconds() < timeout) && (left.isBusy() || right.isBusy())) {
-                telemetry.addData("Path1",  "Running to %7d :%7d", newLeftTarget,  newRightTarget);
-                telemetry.addData("Path2",  "Running at %7d :%7d",left.getCurrentPosition(), right.getCurrentPosition());
+            while (opModeIsActive() && (runtime.seconds() < timeout) && (LF.isBusy() || RF.isBusy() || LB.isBusy() || RB.isBusy())) {
+                telemetry.addData("Path1",  "Running to %7d :%7d", newLFTarget,  newRFTarget);
+                telemetry.addData("Path2",  "Running at %7d :%7d",LF.getCurrentPosition(), RF.getCurrentPosition());
                 telemetry.update();
             }
 
-            left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            LF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            LB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            RF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            RB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             sleep(250);   // optional pause after each move
         }
