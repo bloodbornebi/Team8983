@@ -103,21 +103,21 @@ public class Mech4Wheel extends LinearOpMode {
         while (opModeIsActive()) {
 
             // Setup a variable for each drive wheel to save power level for telemetry
-            double leftPower;
-            double rightPower;
+            float leftPower;
+            float rightPower;
 
             //drive code
-            double FORWARD = 1; //max
-            double NEUTRAL = 0;
-            double MOD = 0;
-            double drive = gamepad1.left_stick_y;
-            double strafe = gamepad1.left_stick_x - NEUTRAL;
-            double rotate = gamepad1.right_stick_x - NEUTRAL;
+            float FORWARD = 1; //max
+            float NEUTRAL = 0;
+            float MOD = 0;
+            float drive = gamepad1.left_stick_y;
+            float strafe = gamepad1.left_stick_x - NEUTRAL;
+            float rotate = gamepad1.right_stick_x - NEUTRAL;
 
-            double lfPower = drive + strafe + rotate + MOD;
-            double rfPower = drive - strafe - rotate + MOD;
-            double lbPower = drive - strafe + rotate + MOD;
-            double rbPower = drive + strafe - rotate + MOD;
+            float lfPower = drive + strafe + rotate + MOD;
+            float rfPower = drive - strafe - rotate + MOD;
+            float lbPower = drive - strafe + rotate + MOD;
+            float rbPower = drive + strafe - rotate + MOD;
 
             // Send calculated power to wheels
             LF.setPower(lfPower);
