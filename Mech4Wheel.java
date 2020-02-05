@@ -176,13 +176,13 @@ public class Mech4Wheel extends LinearOpMode {
             //arm servo ends
             if (gamepad1.a) {
               if (gl.getPosition() < upLeftlimit && gr.getPosition() > downRightlimit){
-                gl.setPosition(gl.getPosition() + .01);
-                gr.setPosition(gr.getPosition() - .01);
+                gl.setPosition(gl.getPosition() + .001);
+                gr.setPosition(gr.getPosition() - .001);
               }
             } else if (gamepad1.x) {
               if (gl.getPosition() > downLeftlimit && gr.getPosition() < upRightlimit){
-                gl.setPosition(gl.getPosition() - .01);
-                gr.setPosition(gr.getPosition() + .01);
+                gl.setPosition(gl.getPosition() - .001);
+                gr.setPosition(gr.getPosition() + .001);
               }
             }
 
