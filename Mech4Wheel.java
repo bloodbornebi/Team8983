@@ -63,9 +63,11 @@ public class Mech4Wheel extends LinearOpMode {
     private DcMotor LB = null;
     private DcMotor RB = null;
     private DcMotor arm = null;
-    private Servo lock;
+    private DcMotor armend = null;
     private Servo left;
     private Servo right;
+    private Servo gl;
+    private Servo gr;
 
     @Override
     public void runOpMode() {
@@ -79,20 +81,25 @@ public class Mech4Wheel extends LinearOpMode {
         RF = hardwareMap.get(DcMotor.class, "Right-Front");
         LB = hardwareMap.get(DcMotor.class,"Left-Back");
         RB = hardwareMap.get(DcMotor.class, "Right-Back");
-        arm = hardwareMap.get(DcMotor.class, "arm");
-        lock = hardwareMap.get(Servo.class, "lock");
         left = hardwareMap.get(Servo.class, "left");
         right = hardwareMap.get(Servo.class,"right");
-        double lockPos = 0;
-        boolean rev = false;
-        int stally = 0;
+        arm = hardwareMap.get(DcMotor.class, "arm");
+        armend = hardwareMap.get(DcMotor.class, "armend");
+        gl = hardwareMap.get(Servo.class, "gl");
+        gr = hardwareMap.get(Servo.class, "gr");
+
+        double uplimit = .75;
+        double downlimit = .3;
 
         // Most robots need the motor on one side to be reversed to drive forward - Reverse the motor that runs backwards when connected directly to the battery
         LF.setDirection(DcMotor.Direction.REVERSE);
+        LB.setDirection(DcMotor.Direction.REVERSE);
         RF.setDirection(DcMotor.Direction.FORWARD);
+        RB.setDirection(DcMotor.Direction.FORWARD);
         LF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
+        LB.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
         RF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
-
+        RB.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -108,7 +115,7 @@ public class Mech4Wheel extends LinearOpMode {
             //drive code
             double FORWARD = 1; //max
             double NEUTRAL = 0;
-            double MOD = 0;
+            double MOD = -1;
             double drive = (FORWARD - gamepad1.left_stick_y) - NEUTRAL;
             double strafe = gamepad1.left_stick_x - NEUTRAL;
             double rotate = gamepad1.right_stick_x - NEUTRAL;
@@ -124,23 +131,6 @@ public class Mech4Wheel extends LinearOpMode {
             LB.setPower(lbPower);
             RB.setPower(rbPower);
 
-            // arm stuff
-            if (gamepad1.left_trigger > .2) {
-              arm.setPower(gamepad1.left_trigger);
-            } else if (gamepad1.right_trigger > .2) {
-              arm.setPower(-gamepad1.right_trigger);
-            } else {
-              arm.setPower(0);
-            }
-
-            // servo
-            if (gamepad1.left_bumper) {
-              lockPos = 0;
-            } else if (gamepad1.right_bumper) {
-              lockPos = 1;
-            }
-            lock.setPosition(lockPos);
-
             //robot reversals
             if (gamepad1.y) {
               LF.setDirection(DcMotor.Direction.FORWARD);
@@ -155,28 +145,47 @@ public class Mech4Wheel extends LinearOpMode {
             }
 
             //grabby Servo
-            if (gamepad1.x) {
+            if (gamepad1.left_bumper) {
               left.setPosition(1);
               right.setPosition(1);
-            } else if (gamepad1.a) {
+            } else if (gamepad1.right_bumper) {
               left.setPosition(0);
               right.setPosition(0);
             }
 
-            //grabby Servo
-            if (gamepad1.x) {
-              left.setPosition(1);
-              right.setPosition(1);
-            } else if (gamepad1.a) {
-              left.setPosition(0);
-              right.setPosition(0);
+            //arm power
+            if (gamepad1.left_stick_button) {
+              arm.setPower(-gamepad1.left_trigger);
+            } else if (gamepad1.left_trigger > 0) {
+              arm.setPower(gamepad1.left_trigger);
+            } else {
+              arm.setPower(0);
             }
 
-            // Show the elapsed game time and wheel power.
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "leftf (%.2f), rightf (%.2f)", lfPower, rfPower);
-            telemetry.addData("Servos","pos "+lockPos);
-            telemetry.addData("Switches",stally);
+            //extension
+            if (gamepad1.right_stick_button) {
+              armend.setPower(-gamepad1.right_trigger);
+            } else if (gamepad1.right_trigger > 0) {
+              armend.setPower(gamepad1.right_trigger);
+            } else {
+              armend.setPower(0);
+            }
+
+            //arm servo ends
+            if (gamepad1.a) {
+              if (gl.getPosition() < uplimit && gr.getPosition() > downlimit){
+                gl.setPosition(gl.getPosition() + .01);
+                gr.setPosition(gr.getPosition() - .01);
+              }
+            } else if (gamepad1.x) {
+              if (gl.getPosition() > downlimit && gr.getPosition() < uplimit){
+                gl.setPosition(gl.getPosition() - .01);
+                gr.setPosition(gr.getPosition() + .01);
+              }
+            }
+
+            telemetry.addData("gl pos:", gl.getPosition());
+            telemetry.addData("gr pos:", gr.getPosition());
             telemetry.update();
         }
     }
