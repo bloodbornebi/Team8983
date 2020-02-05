@@ -88,8 +88,10 @@ public class Mech4Wheel extends LinearOpMode {
         gl = hardwareMap.get(Servo.class, "gl");
         gr = hardwareMap.get(Servo.class, "gr");
 
-        double uplimit = .75;
-        double downlimit = .3;
+        double upLeftlimit = .75;
+        double downLeftlimit = .3;
+        double upRightlimit = .75;
+        double downRightlimit = .3;
 
         // Most robots need the motor on one side to be reversed to drive forward - Reverse the motor that runs backwards when connected directly to the battery
         LF.setDirection(DcMotor.Direction.REVERSE);
@@ -173,12 +175,12 @@ public class Mech4Wheel extends LinearOpMode {
 
             //arm servo ends
             if (gamepad1.a) {
-              if (gl.getPosition() < uplimit && gr.getPosition() > downlimit){
+              if (gl.getPosition() < upLeftlimit && gr.getPosition() > downRightlimit){
                 gl.setPosition(gl.getPosition() + .01);
                 gr.setPosition(gr.getPosition() - .01);
               }
             } else if (gamepad1.x) {
-              if (gl.getPosition() > downlimit && gr.getPosition() < uplimit){
+              if (gl.getPosition() > downLeftlimit && gr.getPosition() < upRightlimit){
                 gl.setPosition(gl.getPosition() - .01);
                 gr.setPosition(gr.getPosition() + .01);
               }
